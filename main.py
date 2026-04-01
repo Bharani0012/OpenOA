@@ -10,13 +10,21 @@ def home():
 
 @app.get("/run")
 def run_analysis():
-    project = project_ENGIE.prepare('./examples/data/la_haute_borne', use_cleansed=False)
-    project.analysis_type.append("ElectricalLosses")
-    project.validate()
+    try:
+        print("STARTING ANALYSIS")
 
-    el = ElectricalLosses(project, UQ=False)
-    el.run()
+        project = project_ENGIE.prepare("./data/la_haute_borne", use_cleaned=False)
+        project.analysis_type.append("ElectricalLosses")
+        project.validate()
 
-    result = el.electrical_losses[0][0]
+        el = ElectricalLosses(project)
+        el.run()
 
-    return {"result": float(result)}
+        return {
+            "loss": float(el.electrical_losses.mean()),
+            "uncertainty": float(el.electrical_losses.std())
+        }
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        return {"error": str(e)}
