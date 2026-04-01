@@ -13,14 +13,14 @@ def run_analysis():
     try:
         print("STARTING ANALYSIS")
 
-        project = project_ENGIE.prepare("./data/la_haute_borne", use_cleaned=False)
+        project = project_ENGIE.prepare("./data/la_haute_borne", use_cleansed=False)
         project.analysis_type.append("ElectricalLosses")
         project.validate()
 
         el = ElectricalLosses(project)
         el.run()
 
-        return {
+        return {    
             "loss": float(el.electrical_losses.mean()),
             "uncertainty": float(el.electrical_losses.std())
         }
