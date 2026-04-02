@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from openoa.analysis import ElectricalLosses
 import examples.project_ENGIE as project_ENGIE
 
@@ -13,7 +13,7 @@ def run_analysis():
     try:
         print("STARTING ANALYSIS")
 
-        project = project_ENGIE.prepare("./data/la_haute_borne", use_cleansed=False)
+        project = project_ENGIE.prepare("./examples/data/la_haute_borne", use_cleansed=False)
         project.analysis_type.append("ElectricalLosses")
         project.validate()
 
@@ -27,4 +27,4 @@ def run_analysis():
 
     except Exception as e:
         print("ERROR:", str(e))
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
